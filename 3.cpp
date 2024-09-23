@@ -34,12 +34,14 @@ Imaginary* ppf(Imaginary array[], int n)
         {
             for (int j2 = 0; j2 < p2; j2++)
             {
-                Imaginary value;
-                Imaginary ivalue;
-                value.convert(A1[k1 + p1 * j2].getReal(), -2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2)));
-                ivalue.convert(A1[k1 + p1 * j2].getImag(), -2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2)));
-                value.sum(ivalue);
-                A2[k1 + p1 * k2].sum(value);
+                Imaginary svalue = Imaginary();
+                Imaginary cvalue = Imaginary();
+                cvalue.sum(A1[k1 + p1 * j2]);
+                cvalue.mult(cos(-2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2))));
+                svalue.sum(A1[k1 + p1 * j2]);
+                cvalue.mult(Imaginary(0,sin(-2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2)))));
+                A2[k1 + p1 * k2].sum(cvalue);
+                A2[k1 + p1 * k2].sum(svalue);
             }
             A2[k1 + p1 * k2].div(p2);
         }
@@ -60,6 +62,21 @@ Imaginary* ppf(Imaginary array[], int n)
     return array;
 }
 
+Imaginary *reverse(Imaginary *array, int n)
+{
+    Imaginary *result = new Imaginary[n];
+    double theta = -2 * M_PI;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            result[i].sum(array[j].getReal()*cos(theta*i*j/n)/n + array[j].getImag()*sin(theta*i*j/n)/n);
+        }
+    }
+
+    return result;
+}
+
 int main()
 {
     int n = 15;
@@ -71,9 +88,16 @@ int main()
     
     Imaginary* result = ppf(NoProblem, n);
         
-    // for (int i = 0; i < n; i++)
-    // {
-    //     cout << fixed << "Re(" << i << ") = " << result[i].getReal() << ", Im(" << i << ") = " << result[i].getImag() << endl;
-    // }
+    for (int i = 0; i < n; i++)
+    {
+        cout << fixed << "Re(" << i << ") = " << result[i].getReal() << ", Im(" << i << ") = " << result[i].getImag() << endl;
+    }
+    cout << "reverse" << endl;
+    result = reverse(result, n);
+    
+    for (int i = 0; i < n; i++)
+    {
+        cout << fixed << "Re(" << i << ") = " << result[i].getReal() << ", Im(" << i << ") = " << result[i].getImag() << endl;
+    }
     return 0;
 }
