@@ -1,5 +1,20 @@
 #include "imaginary.h"
 
+Imaginary *reverse(Imaginary *array, int n)
+{
+    Imaginary *result = new Imaginary[n];
+    double theta = -2 * M_PI;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            result[i].sum(array[j].getReal()*cos(theta*i*j/n)/n + array[j].getImag()*sin(theta*i*j/n)/n);
+        }
+    }
+
+    return result;
+}
+
 Imaginary* ppf(Imaginary array[], int n)
 {
     int p1 = 1, p2 = n;
@@ -20,7 +35,8 @@ Imaginary* ppf(Imaginary array[], int n)
             for (int j1 = 0; j1 < p1; j1++)
             {
                 Imaginary value;
-                value.convert(array[j2 + p2 * j1].getReal(), -2 * M_PI * j1 * k1 / p1);
+                value.ex(Imaginary(0, -2 * M_PI * j1 * k1 / p1));
+                value.mult(array[j2 + p2 * j1].getReal());
                 A1[k1 + p1 * j2].sum(value);
             }
             A1[k1 + p1 * j2].div(p1);
@@ -35,10 +51,8 @@ Imaginary* ppf(Imaginary array[], int n)
             for (int j2 = 0; j2 < p2; j2++)
             {
                 Imaginary value;
-                Imaginary ivalue;
-                value.convert(A1[k1 + p1 * j2].getReal(), -2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2)));
-                ivalue.convert(A1[k1 + p1 * j2].getImag(), -2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2)));
-                value.sum(ivalue);
+                value.ex(Imaginary(0, -2 * M_PI * (j2 / (p1 * p2) * (k1 + p1 * k2))));
+                value.mult(A1[k1 + p1 * k2]);
                 A2[k1 + p1 * k2].sum(value);
             }
             A2[k1 + p1 * k2].div(p2);
@@ -57,7 +71,7 @@ Imaginary* ppf(Imaginary array[], int n)
         cout << fixed << "Re(" << i << ") = " << A2[i].getReal() << ", Im(" << i << ") = " << A2[i].getImag() << endl;
     }
 
-    return array;
+    return A2;
 }
 
 int main()
@@ -70,6 +84,8 @@ int main()
     }
     
     Imaginary* result = ppf(NoProblem, n);
+
+    // result = reverse(result, n);
         
     // for (int i = 0; i < n; i++)
     // {

@@ -89,6 +89,14 @@ class Imaginary
         calc();
     }
 
+    void ex(Imaginary number)
+    {
+        double real = number.real;
+        double imag = number.imag;
+        this->real = exp(real) * cos(imag);
+        this->imag = exp(real) * sin(imag);
+    }
+
     void print()
     {
         cout << fixed << "Re = " << this->getReal() << ", Im = " << this->getImag() << endl;
