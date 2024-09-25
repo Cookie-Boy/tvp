@@ -64,15 +64,16 @@ Imaginary *reverse(Imaginary *array, int n)
 
 int main()
 {
-    int n = 4;
-    Imaginary NoProblem[n] = {Imaginary(3, 0), Imaginary(79, 0), Imaginary(92, 0), Imaginary(12, 0)};
+    int n = 15;
+    Imaginary NoProblem[n] = {Imaginary(1,0), Imaginary(2,0), Imaginary(3,0), Imaginary(4,0), Imaginary(5,0), Imaginary(6,0), Imaginary(7,0), Imaginary(8,0), Imaginary(9,0), Imaginary(10,0), Imaginary(11,0), Imaginary(12,0), Imaginary(13,0), Imaginary(14,0), Imaginary(15,0), Imaginary(16,0)};
     
     Imaginary* result = fft(NoProblem, n);
-    //result = reverse(result, n);
+    // result = reverse(result, n);
         
     for (int i = 0; i < n; i++)
     {
         cout << fixed << "Re(" << i << ") = " << result[i].getReal() << ", Im(" << i << ") = " << result[i].getImag() << endl;
     }
+
     return 0;
 }
