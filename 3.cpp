@@ -74,21 +74,6 @@ Imaginary* ppf(Imaginary array[], int n)
     return A2;
 }
 
-Imaginary *reverse(Imaginary *array, int n)
-{
-    Imaginary *result = new Imaginary[n];
-    double theta = -2 * M_PI;
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            result[i].sum(array[j].getReal()*cos(theta*i*j/n)/n + array[j].getImag()*sin(theta*i*j/n)/n);
-        }
-    }
-
-    return result;
-}
-
 int main()
 {
     int n = 15;
