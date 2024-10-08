@@ -48,16 +48,16 @@ class Imaginary
     }
     double sum(Imaginary number)
     {
-        real+= number.getReal();
-        imag+= number.getImag();
+        this->real += number.getReal();
+        this->imag += number.getImag();
         calc();
     }
 
     void mult(Imaginary number)
     {
-        double tmp = real * number.getReal() - imag * number.getImag();
-        imag = real * number.getImag() + imag*number.getReal();
-        real = tmp;
+        double tmp = this->real * number.getReal() - this->imag * number.getImag();
+        this->imag = this->real * number.getImag() + this->imag * number.getReal();
+        this->real = tmp;
         calc();
     }
 

@@ -47,6 +47,7 @@ class ImaginaryNum:
         if isinstance(i, ImaginaryNum):
             a = i.a
             b = i.b
+            print(math.exp(a) * math.cos(b))
             return ImaginaryNum(math.exp(a) * math.cos(b), math.exp(a) * math.sin(b))
         else:
             return ImaginaryNum(math.cos(i), math.sin(i))
@@ -105,15 +106,22 @@ def Semifast_Fourier(f):
     for i, val in enumerate(A1):
         print(f"X[{i}] = {val}")
     A2 = [ImaginaryNum(0,0)] * N
+    print("Ohayo!")
     for k1 in range(p1):
         for k2 in range(p2):
             for j2 in range(p2):
-                A2[k1 + p1 * k2] += A1[k1 + p1 * j2] * ImaginaryNum.exp(i * (-2) * math.pi * (  j2 / (p1 * p2) * (k1 + p1 * k2)))
+                value = A1[k1 + p1 * j2] * ImaginaryNum.exp(i * (-2) * math.pi * (  j2 / (p1 * p2) * (k1 + p1 * k2)))
+                # print((-2) * math.pi * (  j2 / (p1 * p2) * (k1 + p1 * k2)))
+                A2[k1 + p1 * k2] += value
                 #print("debug: ", k1, j2, j1, p1, p2, A2[k1 + p1 * k2], k1 + p1 * j2, "A1", A1[k1 + p1 * j2], k1 + p1 * j2, i * (-2) * math.pi * ( (j1 * k1 / p1) +  j2 / (p1 * p2) * (k1 + p1 * k2)) )  
+                # print(A2[k1 + p1 * k2])
             A2[k1 + p1 * k2] /= p2
+            A2[k1 + p1 * k2] *= N
+            
+
     print("A2:")
     for i, val in enumerate(A2):
-        val = val * N
+        # val = val * N
         print(f"X[{i}] = {val}")
     return A2
 
@@ -121,15 +129,15 @@ def Semifast_Fourier(f):
 
 if __name__ == "__main__":
     input_signal = [3,0,2,2,2,3,4,2,4,5]
-    dft_result = DiscreteFourierTransform(input_signal)
+    dft_result = DiscreteFourierTransform(input_signal[:])
     
     for i, val in enumerate(dft_result):
         print(f"X[{i}] = {val}")
-    input_signal2 = [3,0,2,2,2,3,4,2,4,5]
-    ppf_result = Semifast_Fourier(input_signal2)
+    input_signal2 = [1, 2, 3, 4 ,5 ,6 ,7 ,8 ,9,10,11,12,13,14,15]
+    ppf_result = Semifast_Fourier(input_signal2[:])
 
     print("inverse_result")
-    inverse_result = inverseFourierTransform(dft_result)
+    inverse_result = inverseFourierTransform(ppf_result)
     for i, val in enumerate(inverse_result):
         print(f"X[{i}] = {val}")
 

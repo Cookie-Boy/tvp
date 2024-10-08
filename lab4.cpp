@@ -62,17 +62,34 @@ Imaginary *reverse(Imaginary *array, int n)
     return result;
 }
 
+int check(int n)
+{
+    if((n & (n - 1)) == 0) // Хитрый бинарный трюк на проверку является ли число степенью 2
+        return n;           // возвращаем само число, если оно является степенью двойки
+    return (pow(2, (int)log2(n) + 1)); // Возвращаем ближайшую степень двойки
+    
+}
+
 int main()
 {
-    int n = 4;
-    Imaginary NoProblem[n] = {Imaginary(3, 0), Imaginary(79, 0), Imaginary(92, 0), Imaginary(12, 0)};
+    int n = 15;
+    Imaginary arr[n] = {Imaginary(1,0), Imaginary(2,0), Imaginary(3,0), Imaginary(4,0), Imaginary(5,0), Imaginary(6,0), Imaginary(7,0), Imaginary(8,0), Imaginary(9,0), Imaginary(10,0), Imaginary(11,0), Imaginary(12,0), Imaginary(13,0), Imaginary(14,0), Imaginary(15,0)};
+
+    int newN = check(n); // Проверяет, чтобы число было степенью 2
+    cout << "New N: " << newN << endl;
+    Imaginary newArr[newN];
+    for(int i = 0; i < n; i++)
+        newArr[i] = arr[i];
+    for(int i = n; i < newN; i++)
+        newArr[i] = Imaginary(0, 0);
     
-    Imaginary* result = fft(NoProblem, n);
-    //result = reverse(result, n);
+    Imaginary* result = fft(newArr, newN);
+    result = reverse(result, newN);
         
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < newN; i++)
     {
         cout << fixed << "Re(" << i << ") = " << result[i].getReal() << ", Im(" << i << ") = " << result[i].getImag() << endl;
     }
+
     return 0;
 }
