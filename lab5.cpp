@@ -1,24 +1,42 @@
 #include <iostream>
+#include <vector>
+
 using namespace std;
+
+void printVector(vector<int> v, const char* name)
+{
+    cout << name << ":\t";
+    cout << "[";
+    for(int i: v)
+        cout << i << " ";
+    cout << "]" << endl;
+}
 
 int main()
 {
-    int n = 10;
-    int arr1[n] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int arr2[n] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int res[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    for(int i = 0; i < n; i++)
+    vector<int> v1 {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    vector<int> v2 {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    if(v1.size() != v2.size())
+    {
+        if(v1.size() < v2.size())
+            v1.resize(v2.size(), 0);
+        else 
+            v2.resize(v1.size(), 0);
+    }
+
+    vector<int> result (v1.size() + v2.size() - 1, 0);
+
+    for(int i = 0; i < result.size(); i++)
     {   
-        int j = 0;
-        for(int k = i; k >= j; k--)
+        for(int k = 0; k < v1.size(); k++)
         {   
-            j = i - k;
-            if(k != j)
-                res[i] = arr1[j] * arr2[k] + arr1[k] * arr2[j];
-            else 
-                res[i] = arr1[j] * arr2[k];
+            int j = i - k;
+            if(j >= 0 && j < v1.size())
+            result[i] += v1[j] * v2[k];
         }
     }
-    for(int i = 0; i < n; i++)
-        cout << "el: " << i << " " << "val: " << res[i] << endl;
+    printVector(v1, "Vector 1");
+    printVector(v2, "Vector 2");
+    printVector(result, "Result vector");
 }
