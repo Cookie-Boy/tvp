@@ -5,7 +5,7 @@ using namespace std;
 
 void printVector(vector<int> v, const char* name)
 {
-    cout << name << ":\t";
+    cout << name << ":";
     cout << "[";
     for(int i: v)
         cout << i << " ";
@@ -15,7 +15,8 @@ void printVector(vector<int> v, const char* name)
 int main()
 {
     vector<int> v1 {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    vector<int> v2 {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    vector<int> v2 {0, 2, 4, 6, 8};
+    vector<int> result (v1.size() + v2.size() - 1, 0);
 
     if(v1.size() != v2.size())
     {
@@ -25,7 +26,6 @@ int main()
             v2.resize(v1.size(), 0);
     }
 
-    vector<int> result (v1.size() + v2.size() - 1, 0);
 
     for(int i = 0; i < result.size(); i++)
     {   
