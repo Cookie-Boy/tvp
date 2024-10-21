@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>
 
-
 using namespace std;
 
 int powerOfTen(int n)
@@ -17,8 +16,6 @@ int multiply(int x, int y)
 {
     if (x < 10 || y < 10)
         return x * y;
-
-    cout << x << " " << y << endl;
 
     int length = max(to_string(x).length(), to_string(y).length());
     int n = length / 2;
@@ -35,9 +32,17 @@ int multiply(int x, int y)
     return ac * powerOfTen(n * 2) + abcd * powerOfTen(n) + bd;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    int x = 9484;
-    int y = 6261;
-    cout << multiply(x, y) << " " << x * y;
+    if (argc != 3) 
+    {
+        cout << "Use: ./lab10 <number1> <number2>" << endl;
+        return 1;
+    }
+    
+    int x = atoi(argv[1]);
+    int y = atoi(argv[2]);
+    cout << x << " * " << y << " = " << multiply(x, y) << endl;
+    cout << "Real mult: " << x * y << endl;
+    return 0;
 }
