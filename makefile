@@ -4,41 +4,45 @@ EXEDIR = exec
 DEPDIR = deps
 OBJDIR = obj
 SRC = $(wildcard *.cpp)
-EXECS = $(OBJ:.o=.exe)
-DEPS = $(OBJ:.o=.d)
-OBJ = $(SRC:.cpp=.o)
+OBJ = $(SRC:%.cpp=$(OBJDIR)/%.o)
+DEPS = $(SRC:%.cpp=$(DEPDIR)/%.d)
+EXECS = $(SRC:%.cpp=$(EXEDIR)/%.exe)
 
-all: $(EXEDIR) $(DEPDIR) $(OBJDIR) $(EXEDIR)/$(EXECS)
+all: $(EXECS)
 	@powershell -Command "Write-Host 'Compilation ended successfully'"
 
-$(EXEDIR): 
+$(EXEDIR):
 	@powershell -Command "Write-Host 'ERROR no' -ForegroundColor Red -NoNewLine; Write-Host ' $(EXEDIR)' -ForegroundColor Cyan -NoNewLine; Write-Host ' directory' -ForegroundColor Red"
-	@powershell -Command "Write-Host 'trying creation directory' -ForegroundColor Yellow -NoNewLine; Write-Host '...'
+	@powershell -Command "Write-Host 'trying creation directory' -ForegroundColor Yellow -NoNewLine; Write-Host '...'"
 	@mkdir $(EXEDIR) || exit 0
-	@powershell -Command "Write-Host 'succeed! :)' -ForegroundColor Green
+	@powershell -Command "Write-Host 'succeed! :)' -ForegroundColor Green"
 
-$(DEPDIR): 
+$(DEPDIR):
 	@powershell -Command "Write-Host 'ERROR no' -ForegroundColor Red -NoNewLine; Write-Host ' $(DEPDIR)' -ForegroundColor Cyan -NoNewLine; Write-Host ' directory' -ForegroundColor Red"
-	@powershell -Command "Write-Host 'trying creation directory' -ForegroundColor Yellow -NoNewLine; Write-Host '...'
+	@powershell -Command "Write-Host 'trying creation directory' -ForegroundColor Yellow -NoNewLine; Write-Host '...'"
 	@mkdir $(DEPDIR) || exit 0
-	@powershell -Command "Write-Host 'succeed! :)' -ForegroundColor Green
+	@powershell -Command "Write-Host 'succeed! :)' -ForegroundColor Green"
 
-$(OBJDIR): 
+$(OBJDIR):
 	@powershell -Command "Write-Host 'ERROR no' -ForegroundColor Red -NoNewLine; Write-Host ' $(OBJDIR)' -ForegroundColor Cyan -NoNewLine; Write-Host ' directory' -ForegroundColor Red"
-	@powershell -Command "Write-Host 'trying creation directory' -ForegroundColor Yellow -NoNewLine; Write-Host '...'
+	@powershell -Command "Write-Host 'trying creation directory' -ForegroundColor Yellow -NoNewLine; Write-Host '...'"
 	@mkdir $(OBJDIR) || exit 0
-	@powershell -Command "Write-Host 'succeed! :)' -ForegroundColor Green
+	@powershell -Command "Write-Host 'succeed! :)' -ForegroundColor Green"
 
-$(OBJDIR)/%.o: %.cpp
+$(OBJDIR)/%.o: %.cpp | $(OBJDIR)
+	@powershell -Command "Write-Host 'Compiling $< to $@' -ForegroundColor Cyan"
+	$(CC) $(CFLAGS) -c $< -o $@
 
+$(EXEDIR)/%.exe: $(OBJDIR)/%.o | $(EXEDIR)
+	@powershell -Command "Write-Host 'Linking $(EXEDIR)/$(@F)' -ForegroundColor Green"
+	$(CC) $(CFLAGS) $< -o $@
 
-%.exe: $(OBJDIR)/%.o
-	@powershell -Command "Write-Host 'compiling ' -NoNewLine; Write-Host '$< ' -ForegroundColor Cyan -NoNewLine; Write-Host " in " -NoNewLine; Write-Host ' $@' -ForegroundColor Green -NoNewLine; Write-Host '...'" 
-	$(CC) $(CFLAGS) $< -o $(EXEDIR)/$@
-	$(CC) -MM $< > $(DEPDIR)/$*.d
-	@powershell -Command "Write-Host 'successfully compiled!' -ForegroundColor Green
+$(DEPDIR)/%.d: %.cpp | $(DEPDIR)
+	@$(CC) -MM $< > $@
 
 -include $(DEPS)
 
 clean:
 	del /Q $(EXEDIR)\*.exe
+	del /Q $(OBJDIR)\*.o
+	del /Q $(DEPDIR)\*.d
