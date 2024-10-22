@@ -2,5 +2,5 @@
 *.exe
 *.d
 exec
-deps
 obj
+deps

@@ -1,57 +1,106 @@
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
+#include <algorithm>
 #include <time.h>
 
 #define MAX 50
 
 using namespace std;
 
-typedef struct
+class edge
 {
-    int **adj_matrix;
-    int num_vertices;
-} Graph;
+    private:
 
-Graph *generate_connected_graph(int num_vertices)
-{
-    Graph *graph = new Graph;
-    graph->num_vertices = num_vertices;
-    graph->adj_matrix = new int *[num_vertices];
-    for (int i = 0; i < num_vertices; i++)
+    int v1;
+    int v2;
+    int weight;
+
+    public:
+
+    edge() : v1(0), v2(1), weight(1)
     {
-        graph->adj_matrix[i] = new int[num_vertices];
-        graph->adj_matrix[i][i] = 0;
     }
 
-    for (int i = 0; i < graph->num_vertices - 1; i++)
+    edge(int v1, int v2, int weight): v1(v1), v2(v2), weight(weight)
     {
-        for (int j = i + 1; j < graph->num_vertices; j++)
+    }
+
+    int get_v1() const 
+    {
+        return v1;
+    }
+
+    int get_v2() const
+    {
+        return v2;
+    }
+
+    int get_weight() const
+    {
+        return weight;
+    }
+};
+
+class Graph
+{
+    private:
+
+    vector<edge> edges;
+
+    public:
+
+    Graph(): edges()
+    {
+    }
+
+    void add_edge(edge edge)
+    {
+        edges.push_back(edge);
+    }
+
+    void sort()
+    {
+        std::sort(edges.begin(), edges.end(), [](const edge& e1, const edge& e2) {
+        return e1.get_weight() < e2.get_weight(); // Сортировка по возрастанию веса
+    });
+    }
+
+    void print()
+    {
+        for(edge i: edges)
+            cout << i.get_v1() << "*" << "---" << i.get_weight() << "---" << "*" <<i.get_v2() << endl;
+        cout << endl;
+    }
+
+};
+
+Graph generate_connected_graph(int num_vertices)
+{
+    Graph graph = Graph();
+
+    for (int i = 0; i < num_vertices - 1; i++)
+    {
+        for (int j = i + 1; j < num_vertices; j++)
         {
+            if(i == j)
+            {
+                graph.add_edge(edge(i, i, 0));
+                continue;
+            }
             int weight = 1 + rand() % MAX;
-            graph->adj_matrix[j][i] = weight;
-            graph->adj_matrix[i][j] = weight;
+            graph.add_edge(edge(i, j, weight));
         }
     }
     return graph;
 }
 
-void print_graph(Graph *G)
-{
-    for (int i = 0; i < G->num_vertices; i++)
-    {
-        for (int j = 0; j < G->num_vertices; j++)
-        {
-            printf("%5d ", G->adj_matrix[i][j]);
-        }
-        cout << endl;
-    }
-}
-
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
-
-    Graph *lecture_graph = generate_connected_graph(5);
-    print_graph(lecture_graph);
+    Graph graph = generate_connected_graph(10);
+    graph.print();
+    graph.sort();
+    graph.print();
     return 0;
 }
