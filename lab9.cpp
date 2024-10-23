@@ -101,8 +101,8 @@ int Number::overflow = 0;
 
 int main()
 {
-    double a = 123;
-    double b = 45;
+    double a = 1234;
+    double b = 5235;
     Number::mult(a, b);
     return 0;
 }

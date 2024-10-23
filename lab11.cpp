@@ -59,7 +59,6 @@ class Graph
     void add_edge(Edge edge)
     {
         edges.push_back(edge);
-        num_vertices++;
     }
 
     void sort()
@@ -81,11 +80,16 @@ class Graph
         return num_vertices;
     }
 
+    void set_num_vertices(int num_vertices)
+    {
+        this->num_vertices = num_vertices;
+    }
+
     Edge get_min_edge()
     {
-        Edge tmp = edges[0];
+        Edge rebro = edges[0];
         edges.erase(edges.begin());
-        return tmp;
+        return rebro;
     }
 
 };
@@ -93,6 +97,7 @@ class Graph
 Graph generate_connected_graph(int num_vertices)
 {
     Graph graph = Graph();
+    graph.set_num_vertices(num_vertices);
 
     for (int i = 0; i < num_vertices - 1; i++)
     {
@@ -126,12 +131,21 @@ bool find(vector<vector<int>> &vector, int v1, int v2)
     return false;
 }
 
-vector<int> find(vector<vector<int>> &vector, int v1)
+vector<int> &find(vector<vector<int>> &vector, int v1)
 {
-    for(auto i: vector)
+    for(auto &i: vector)
         for(auto num: i)
             if(num == v1)
                 return i;
+    cout << "not found";
+}
+
+void connect(vector<int> &v1, vector<int> &v2, vector<vector<int>> &connected_vertices)
+{
+    for (int i = 0; i < v2.size(); i++)
+        if (find(v1.begin(), v1.end(), v2[i]) == v1.end())
+            v1.push_back(v2[i]);
+    connected_vertices.erase(find(connected_vertices.begin(), connected_vertices.end(), v2));
 }
 
 Graph kraskal(Graph graph)
@@ -140,18 +154,18 @@ Graph kraskal(Graph graph)
 
     for(int i = 0; i < graph.get_num_vertices(); i++)
     {
-        vector<int> tmp(1, i);
-        connected_vertices.push_back(tmp);
+        vector<int> rebro(1, i);
+        connected_vertices.push_back(rebro);
     }
 
     Graph minGraph = Graph();
     while(connected_vertices.size() != 1)
     {
-        Edge tmp = graph.get_min_edge();
-        if(!find(connected_vertices, tmp.get_v1(), tmp.get_v2()))
+        Edge rebro = graph.get_min_edge();
+        if(!find(connected_vertices, rebro.get_v1(), rebro.get_v2()))
         {
-            connect(comp1, comp2, vector)
-            minGraph.add_edge();
+            connect(find(connected_vertices, rebro.get_v1()), find(connected_vertices, rebro.get_v2()), connected_vertices);
+            minGraph.add_edge(rebro);
         }
     }
     return minGraph;
@@ -159,12 +173,14 @@ Graph kraskal(Graph graph)
 
 int main(int argc, char *argv[])
 {
-    int num_vertices = 10;
+    int num_vertices = 5;
     srand(time(NULL));
     Graph graph = generate_connected_graph(num_vertices);
+    cout << "Generated graph:" << endl;
     graph.print();
     graph.sort();
     Graph minGraph = kraskal(graph);
+    cout << "Minimized graph:" << endl;
     minGraph.print();
     return 0;
 }
