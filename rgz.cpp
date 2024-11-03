@@ -102,7 +102,7 @@ int Brute_Force(vector<vector<int>> &c, int start_v)
 
         if(c[path[n - 1]][path[0]] != INF && cost != INF)       // check if infinite 
             cost += c[path[n - 1]][path[0]]; // add return cost 
-            
+
         else 
             cost = INF;
 
@@ -114,10 +114,11 @@ int Brute_Force(vector<vector<int>> &c, int start_v)
 
     } while(next_permutation(path.begin() + 1, path.end())); // generating all perestanovki
 
-    cout << "Brute force: \n" << "cost: " << min_cost << "\npath: " << shortest_path[0];
+    cout << "Brute force: \n" << "cost: " << min_cost << "\npath: ";
 
-    for(int i = 1; i < n; i++)
-        cout << " -> " << shortest_path[i]; 
+    for(int i = 0; i < n; i++)
+        cout << shortest_path[i] << " -> "; 
+    cout << shortest_path[0];
 }
 
 int main()
