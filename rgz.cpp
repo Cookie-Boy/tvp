@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #define INF INT32_MAX
 
@@ -72,9 +73,51 @@ int Branch_Border(vector<vector<int>> &c, int startv)
     vector<int> current_path(1, startv);
 }
 
-int Brute_Force(vector<vector<int>> &c)
+int Brute_Force(vector<vector<int>> &c, int start_v)
 {
-    
+    int n = c.size();
+    vector<int> path(n);
+
+    for(int i = 0; i < n; i++)
+        path[i] = i;
+
+    swap(path[0], path[start_v]);
+
+    int min_cost = INF;
+    vector<int> shortest_path;
+
+    do 
+    {
+        int cost = 0;
+        for(int i = 0; i < n - 1; i++)
+        {
+            if(c[path[i]][path[i+1]] != INF)
+                cost += c[path[i]][path[i + 1]]; // summ cost of the entire path (each iteration sum path from current vertice to next vertice in the route)
+            else 
+            {
+                cost = INF;                      // in case there are inf path between vertices cost equals inf and end loop ( as it's not actually going anywhere now)
+                break;
+            }
+        }
+
+        if(c[path[n - 1]][path[0]] != INF && cost != INF)       // check if infinite 
+            cost += c[path[n - 1]][path[0]]; // add return cost 
+            
+        else 
+            cost = INF;
+
+        if(cost < min_cost)
+        {
+            min_cost = cost;
+            shortest_path = path;
+        }
+
+    } while(next_permutation(path.begin() + 1, path.end())); // generating all perestanovki
+
+    cout << "Brute force: \n" << "cost: " << min_cost << "\npath: " << shortest_path[0];
+
+    for(int i = 1; i < n; i++)
+        cout << " -> " << shortest_path[i]; 
 }
 
 int main()
@@ -100,7 +143,8 @@ int main()
 
     node root = node(start_v, 0, 0, path, remaining_v);
 
-    Branch_Border(c, 0);
+    Brute_Force(c, 0);
+    // Branch_Border(c, 0);
 
     return 0;
 }
