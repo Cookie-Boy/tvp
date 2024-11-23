@@ -57,6 +57,8 @@ class Graph
     {
     }
 
+    Graph(vector<Edge> edges, int num_vertices): edges(edges), num_vertices(num_vertices) {}
+
     void add_edge(Edge edge)
     {
         edges.push_back(edge);
@@ -171,10 +173,19 @@ int main()
 {
     int num_vertices = 5;
     srand(time(NULL));
-    Graph graph = generate_connected_graph(num_vertices);
+    // Graph graph = generate_connected_graph(num_vertices);
+    vector<Edge> edges;
+    edges.push_back(Edge(0, 1, 2));
+    edges.push_back(Edge(0, 3, 10));
+    edges.push_back(Edge(1, 2, 4));
+    edges.push_back(Edge(2, 3, 7));
+    edges.push_back(Edge(3, 4, 1));
+    edges.push_back(Edge(0, 5, 3));
+    edges.push_back(Edge(2, 5, 5));
+    Graph graph = Graph(edges, 6);
     cout << "Generated graph:" << endl;
     graph.print();
-    int v_start = 4;
+    int v_start = 3;
     bellman(graph, v_start);
     return 0;
 }

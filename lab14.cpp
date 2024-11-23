@@ -29,9 +29,9 @@ int main(int argc, char* argv[])
     if(argc == 1)
     {
         cout << "no input data! used default parameters: weight = 20, w1 = 1, w2 = 3, w3 = 4, c1 = 1, c2 = 4, c3 = 5" << endl;
-        W = 20;
-        Wi = {1, 3, 4};
-        Ci = {1, 4, 5};
+        W = 13;
+        Wi = {3, 5, 8};
+        Ci = {8, 14, 23};
     }
     else if(argc == 2)
     {

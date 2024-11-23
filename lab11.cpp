@@ -56,6 +56,8 @@ class Graph
     {
     }
 
+    Graph(vector<Edge> edges, int num_vertices): edges(edges), num_vertices(num_vertices) {}
+
     void add_edge(Edge edge)
     {
         edges.push_back(edge);
@@ -175,7 +177,14 @@ int main(int argc, char *argv[])
 {
     int num_vertices = 5;
     srand(time(NULL));
-    Graph graph = generate_connected_graph(num_vertices);
+    // Graph graph = generate_connected_graph(num_vertices);
+    vector<Edge> edges;
+    edges.push_back(Edge(0, 1, 2));
+    edges.push_back(Edge(0, 3, 10));
+    edges.push_back(Edge(1, 2, 4));
+    edges.push_back(Edge(2, 3, 7));
+    edges.push_back(Edge(3, 4, 1));
+    Graph graph = Graph(edges, 5);
     cout << "Generated graph:" << endl;
     graph.print();
     graph.sort();
