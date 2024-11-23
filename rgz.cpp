@@ -19,8 +19,9 @@ class node
 
     int static calc_lower_border(int current_v, int path_cost, vector<int> &path, vector<int> &remaining_v, vector<vector<int>> &c)
     {
+        if(path_cost == INF)
+            return INF;
         int lower_bound = path_cost;
-
         for(auto i: remaining_v)
         {
             int min_cost = INF;
@@ -42,40 +43,27 @@ class node
 
     int get_current_v()
     {
-        return current_v;
+        return this->current_v;
     }
     
     int get_cost()
     {
-        return path_cost;
+        return this->path_cost;
     }
 
     int get_lower_border()
     {
-        return lower_border;
+        return this->lower_border;
     }
 
     vector<int>& get_path()
     {
-        return path;
+        return this->path;
     }
 
     vector<int>& get_remaining_v()
     {
-        return remaining_v;
-    }
-
-    void print()
-    {
-        cout << "v: " << current_v << " cost: " << path_cost << " lower_border: " << lower_border << " path: " << path[0];
-
-        for(int i = 1; i < path.size(); i++)
-            cout << ", " << path[i];
-
-        cout << " remaining v: " << remaining_v[0];
-
-        for(int i = 1; i < remaining_v.size(); i++)
-            cout << ", " << remaining_v[i];
+        return this->remaining_v;
     }
 
 };
@@ -106,21 +94,34 @@ node Branch_Border(vector<vector<int>> &c, node Node)
         else 
             tmpcost = c[Node.get_current_v()][i] + Node.get_cost();
 
-        branches.push_back(node(i, tmpcost, tpath, trem, c));
+        node tmpNode(i, tmpcost, tpath, trem, c);
+        if(branches.empty() || tmpNode.get_lower_border() < branches[0].get_lower_border())
+        {
+            branches.clear();
+            branches.push_back(tmpNode);
+        }
+        else if(tmpNode.get_lower_border() > branches[0].get_lower_border())
+            continue;
+        else 
+            branches.push_back(tmpNode);
     }
     int min_path_cost = INF;
     node min_node;
     for(auto i: branches)
     {
+        node branch_node;
         int branch_cost = INF;
         if(i.get_lower_border() < min_path_cost)
-            branch_cost = Branch_Border(c, i).get_cost();
+        {
+            branch_node = Branch_Border(c, i);
+            branch_cost = branch_node.get_cost();
+        }
 
         if(branch_cost < min_path_cost)
         {
             min_path_cost = branch_cost;
-            min_node = i;
-        }   
+            min_node = branch_node;  
+        }      
     }
     return min_node;
 }
@@ -211,6 +212,6 @@ int main()
     cout << "path: ";
     for(int i = 0; i < n; i++)
         cout << branch_border.get_path()[i] << " -> ";
-    cout << branch_border.get_path()[0];
+    cout << branch_border.get_path()[0] << endl;
     return 0;
 }
