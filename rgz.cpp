@@ -38,6 +38,11 @@ class node
         this->lower_border = node::calc_lower_border(current_v, path_cost, path, remaining_v, c);
     }
 
+    node(int path_cost)
+    {
+        this->path_cost = path_cost;
+    }
+
     node() {}
 
     int get_current_v()
@@ -64,65 +69,57 @@ class node
     {
         return remaining_v;
     }
-
-    void print()
-    {
-        cout << "v: " << current_v << " cost: " << path_cost << " lower_border: " << lower_border << " path: " << path[0];
-
-        for(int i = 1; i < path.size(); i++)
-            cout << ", " << path[i];
-
-        cout << " remaining v: " << remaining_v[0];
-
-        for(int i = 1; i < remaining_v.size(); i++)
-            cout << ", " << remaining_v[i];
-    }
-
 };
 
 node Branch_Border(vector<vector<int>> &c, node Node)
 {
-    if(Node.get_remaining_v().empty())
+    vector<node> branches;
+    branches.push_back(Node);
+    vector<node> new_branches;
+    while(!branches[0].get_remaining_v().empty())
+    {
+        for(auto b: branches)       //for each branch
+        {
+            for(int i: b.get_remaining_v()) //create all branches 
+            {
+                vector<int> tpath = b.get_path();
+                tpath.push_back(i);
+                vector<int> trem = b.get_remaining_v();
+                trem.erase(find(trem.begin(), trem.end(), i));
+                int tmpcost;
+                if(c[b.get_current_v()][i] == INF || b.get_cost() == INF)
+                    tmpcost = INF;
+                else 
+                    tmpcost = c[b.get_current_v()][i] + b.get_cost();
+
+                new_branches.push_back(node(i, tmpcost, tpath, trem, c));
+            }
+        }
+        branches.clear();
+        branches.push_back(new_branches[0]); // add some value so it's not empty 
+        for(auto branch: new_branches)  //filter branches to lowest border
+        {
+            if(branches[0].get_lower_border() > branch.get_lower_border())
+            {
+                branches.clear();
+                branches.push_back(branch);
+            }
+            else if(branches[0].get_lower_border() == branch.get_lower_border())
+                branches.push_back(branch);
+        }
+    }
+    node final_node = node(INF);
+    for(auto branch: branches)
     {
         int cost;
-        if(c[Node.get_current_v()][Node.get_path()[0]] == INF || Node.get_cost() == INF)
+        if(c[branch.get_current_v()][branch.get_path()[0]] == INF || branch.get_cost() == INF)
             cost = INF;
         else 
             cost = c[Node.get_current_v()][Node.get_path()[0]] + Node.get_cost();
-        node tmp = node(Node.get_current_v(), cost, Node.get_path(), Node.get_remaining_v(), c);
-        return tmp;
+        if(cost < final_node.get_cost())
+            final_node = node(Node.get_current_v(), cost, Node.get_path(), Node.get_remaining_v(), c);
     }
-
-    vector<node> branches;
-    for(int i: Node.get_remaining_v())
-    {
-        vector<int> tpath = Node.get_path();
-        tpath.push_back(i);
-        vector<int> trem = Node.get_remaining_v();
-        trem.erase(find(trem.begin(), trem.end(), i));
-        int tmpcost;
-        if(c[Node.get_current_v()][i] == INF || Node.get_cost() == INF)
-            tmpcost = INF;
-        else 
-            tmpcost = c[Node.get_current_v()][i] + Node.get_cost();
-
-        branches.push_back(node(i, tmpcost, tpath, trem, c));
-    }
-    int min_path_cost = INF;
-    node min_node;
-    for(auto i: branches)
-    {
-        int branch_cost = INF;
-        if(i.get_lower_border() < min_path_cost)
-            branch_cost = Branch_Border(c, i).get_cost();
-
-        if(branch_cost < min_path_cost)
-        {
-            min_path_cost = branch_cost;
-            min_node = i;
-        }   
-    }
-    return min_node;
+    return final_node;
 }
 
 int Brute_Force(vector<vector<int>> &c, int start_v)
