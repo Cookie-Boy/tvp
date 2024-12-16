@@ -19,8 +19,9 @@ class node
 
     int static calc_lower_border(int current_v, int path_cost, vector<int> &path, vector<int> &remaining_v, vector<vector<int>> &c)
     {
+        if(path_cost == INF)
+            return INF;
         int lower_bound = path_cost;
-
         for(auto i: remaining_v)
         {
             int min_cost = INF;
